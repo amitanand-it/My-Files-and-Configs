@@ -7,8 +7,9 @@ set -o vi
 #     alias update='sudo apt-get upgrade'
 # fi
 
-REPO="REPO6678"
-cd /mnt/raid/shared/git-changes/$REPO
+REMOTE_PATH=/opt/practice/
+REPO="MyLearnings"
+cd ${REMOTE_PATH}${REPO}
 
 alias sessions='tmux ls'
 alias kill-session='tmux kill-session -t'
