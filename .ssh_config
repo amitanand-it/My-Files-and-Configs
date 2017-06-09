@@ -1,0 +1,29 @@
+Host local
+     HostName 192.168.1.160
+     User amitxxx
+     IdentityFile ~/.ssh/id_rsa
+
+Host ds
+     HostName 192.168.31.215
+     User amityyy
+     IdentityFile ~/.ssh/id_rsa
+
+Host jatin
+     HostName 192.168.0.88
+     User jatinxxx
+     IdentityFile ~/.ssh/id_rsa
+
+Host mait
+     HostName 192.168.0.88
+     User admin
+     IdentityFile ~/.ssh/id_rsa
+
+Host nam
+     HostName 192.168.0.88
+     User testuser
+     IdentityFile ~/.ssh/id_rsa
+
+Host utkarsh
+     HostName 192.168.0.88
+     User practice
+     IdentityFile ~/.ssh/id_rsa
