@@ -1,5 +1,68 @@
 Simple steps for creating Debian package
 ------------------------------------------
+Debian packages must adhere to a strict directory structure. 
+This includes a so-called control file and other scripts that 
+look after what happens during installation of the package
+
+The control file, DEBIAN/control
+------------------------------------
+The control file is the core of the Debian package; it contains all 
+relevant metadata. Things such as package name, version, supported 
+architectures, and dependancies are all included in this file. 
+
+Here is what our current control file looks like:
+
+Package: sd-agent
+Version: 1.4.2
+Architecture: all
+Essential: no
+Section: web
+Priority: optional
+Depends: python (>=2.3)
+Maintainer: Ryan Duffield
+Installed-Size: 96
+Description: The Server Density monitoring agent.
+
+
+The conffiles, DEBIAN/conffiles
+-----------------------------------------
+Configuration files, or “conffiles”, are files that are included 
+within a Debian package that may be changed by a user. When uninstalling 
+the package, a user or system administrator dealing with the package may 
+not want his or her configuration files removed. 
+Running sudo apt-get remove sd-agent will remove all installed package files 
+except for those listed in the DEBIAN/conffiles file. 
+
+Here is what ours looks like:
+
+/etc/sd-agent/config.cfg
+/etc/init.d/sd-agent
+
+If a user truly wants to remove everything including the configuration files, 
+this can be done by using the purge command instead of remove: 
+sudo apt-get purge sd-agent.
+
+The md5sums file (DEBIAN/md5sums)
+----------------------------------------
+
+This file is a list of MD5 checksums for all files contained within the package 
+that will actually be extracted to the system. This can be most easily generated 
+using a combination of commands:
+
+$ find . -type f ! -regex '.*.hg.*' ! -regex '.*?debian-binary.*' ! -regex '.*?DEBIAN.*' -print0 | xargs --null md5sum > DEBIAN/md5sums
+
+Creating the package
+------------------------------------------
+
+When all of the above is in place, creating the actual Debian package, or .deb file, is easy:
+
+$ dpkg -b pkg-debian/ sd-agent_1.4.2_i386.deb
+$ dpkg-deb: building package sd-agent' insd-agent_1.4.2_i386.deb'.
+
+
+----------------------
+Summary
+-----------------------
 
 1) dpkg -b package-folder package-name.deb
    where folder-name will have some important files in a
@@ -11,7 +74,6 @@ Simple steps for creating Debian package
    --> DEBIAN/md5sums file
    --> /etc/configuration-files (optional)
    --> /usr/bin/some-more-files (optional)
-  
 
 2) To see details of a package
    dpkg --info package-name
