@@ -1,0 +1,21 @@
+Simple steps for creating Debian package
+------------------------------------------
+
+1) dpkg -b package-folder package-name.deb
+   where folder-name will have some important files in a
+   structured way.
+
+   It should have
+   package-folder
+   --> DEBIAN/control file
+   --> DEBIAN/md5sums file
+   --> /etc/configuration-files (optional)
+   --> /usr/bin/some-more-files (optional)
+  
+
+2) To see details of a package
+   dpkg --info package-name
+3) To install Package
+   dpkg --install package-name
+4) To check whether a package installed or not
+   dpkg -L package-name
