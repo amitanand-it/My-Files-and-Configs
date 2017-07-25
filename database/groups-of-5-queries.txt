@@ -48,8 +48,12 @@ where 5 > ( select count(product_id) from general.catalog_products
 where catalog_id = cp.catalog_id and product_id < cp.product_id ) 
 order by catalog_id limit 25 ) as foo order by foo.catalog_id, foo.product_id;
 
-
-
+using CTE
+-------------------
+with query as 
+(select catalog_id, product_id, row_number() over (partition by catalog_id order by product_id) as row_number 
+from general.catalog_products) 
+select catalog_id, product_id from query  where row_number <= 5 limit 25;
 
 
 
