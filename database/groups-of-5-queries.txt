@@ -1,0 +1,58 @@
+
+(1)  You have a table having columns catalog_id and product_id. A single catalog_id is associated with mulitple product_ids.
+For example , table view is:
+
+ catalog_id | product_id
+------------+------------
+         42 |    2972042
+         42 |    2971991
+         42 |    2971712
+         42 |    2971681
+         42 |    2971676
+         42 |    2971672
+         42 |    2971666
+         44 |    2971655
+         44 |    2971651
+         44 |    2971622
+         44 |    2971614
+         .
+         .
+         .
+You have to show catalog_id and product_id in groups of 5 only. For example, 5 products of catalog_id 42, then 5 products
+of catalog_id 44 and so on..
+
+Answer: 
+There are multiple ways to do this
+
+
+Using windows function
+----------------------------
+select catalog_id, product_id 
+from ( select catalog_id, product_id, row_number() over (partition by catalog_id order by product_id)  
+from general.catalog_products order by catalog_id ) as foo 
+where foo.row_number <= 5  limit 25;
+
+using limit in subquery
+-----------------------------
+select foo.catalog_id, foo.product_id 
+from (select catalog_id, product_id from general.catalog_products cp 
+where product_id in ( select product_id from general.catalog_products 
+where catalog_id = cp.catalog_id order by product_id  limit 5 ) 
+order by catalog_id limit 25 ) as foo order by foo.catalog_id, foo.product_id;
+
+using count(*) in subquery
+-------------------------------
+select foo.catalog_id, foo.product_id 
+from ( select catalog_id, product_id from general.catalog_products cp 
+where 5 > ( select count(product_id) from general.catalog_products 
+where catalog_id = cp.catalog_id and product_id < cp.product_id ) 
+order by catalog_id limit 25 ) as foo order by foo.catalog_id, foo.product_id;
+
+
+
+
+
+
+
+
+
