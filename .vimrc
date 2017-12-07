@@ -1,9 +1,10 @@
 filetype plugin on
 "runtime macros/matchit.vim
 "
+set path+=$PWD/**
 
 set number
-set relativenumber
+"set relativenumber
 set nocompatible
 set modelines=0
 set tabstop=4
@@ -33,21 +34,20 @@ let mapleader = ","
 "set formatoptions=qrn1
 "set colorcolumn=85
 " caW""<Esc>P
-"
-set path+=$PWD/**
-nnoremap gf :exe 'find' substitute(expand('<cfile>'), '^/', '', '')<CR>
+" nnoremap <up> <nop>
+" nnoremap <down> <nop>
+" nnoremap <left> <nop>
+" nnoremap <right> <nop>
+" inoremap <up> <nop>
+" inoremap <down> <nop>
+" inoremap <left> <nop>
+" inoremap <right> <nop>
 
-nnoremap <up> <nop>
-nnoremap <down> <nop>
-nnoremap <left> <nop>
-nnoremap <right> <nop>
-inoremap <up> <nop>
-inoremap <down> <nop>
-inoremap <left> <nop>
-inoremap <right> <nop>
 inoremap jk <Esc>
+nnoremap gf :exe 'find' substitute(expand('<cfile>'), '^/', '', '')<CR>
 nnoremap j gj
 nnoremap k gk
+
 nnoremap <leader>t :tabnew test.pl<cr>
 "nnoremap <leader>tt :tabnew pl<cr>
 
@@ -57,9 +57,14 @@ nnoremap <leader>sv :source $MYVIMRC<cr>:nohlsearch<CR>
 
 
 nnoremap <leader>/ :noh<cr>
-nnoremap <tab> %
-vnoremap <tab> %
+" nnoremap <tab> %
+" vnoremap <tab> %
 
+" open last command vis as perl line no.
+" "===========================================================================================
+" inoremap <leader>dbh my $dbh = &UtilsDB::db_connect (DB_USER=>'tradein_dev',DB_PASS=>'ti_hacker', DB_HOST=>'127.0.0.1',DB_NAME=> 'tradein_clients',ATTR =>{ 'AutoCommit'=>1,'RaiseError'=>1,});<cr>
+" inoremap <leader>dbix my $dbix_schema = DBSchema:__SCHEMA__->connect(sub { &UtilsDB::db_connect(ATTR=>{'AutoCommit'=>1, 'RaiseError'=>1, pg_server_prepare=>0}) },{on_connect_do => ['SET search_path =public,general; SET default_transaction_read_only TO false;']});
+" inoremap <leader>rs my $rs = $dbix_schema->resultset('');<ESC>hhi
  inoremap <leader>bf <%filter><CR>unless($m->aborted()){<CR>$_ = Utils::FillInForm->new->fill ( scalarref => \$_, fdat =>   \%ARGS,);<CR>}<CR></%filter><CR>
  inoremap <leader>bh <%flags><CR>inherit=>'/syshandler'<CR></%flags><CR>
  inoremap <leader>ba <%args><CR></%args><ESC>ko
@@ -68,6 +73,9 @@ vnoremap <tab> %
  inoremap <leader>ii <% %><ESC>hhi 
  inoremap <leader>dda print "<pre>",Data::Dumper->Dump([ ]),"</pre>";<ESC><S-B><Insert>
  inoremap <leader>dds print STDERR "\n\n",Data::Dumper->Dump([ ]),"\n\n";<ESC><S-B><Insert>
+" nnoremap <leader>dbh imy $dbh = &UtilsDB::db_connect (DB_USER=>'tradein_dev',DB_PASS=>'ti_hacker', DB_HOST=>'127.0.0.1',DB_NAME=> 'tradein_clients',ATTR =>{ 'AutoCommit'=>1,'RaiseError'=>1,});<cr>
+" nnoremap <leader>dbix imy $dbix_schema = DBSchema:__SCHEMA__->connect(sub { &UtilsDB::db_connect(ATTR=>{'AutoCommit'=>1, 'RaiseError'=>1, pg_server_prepare=>0}) },{on_connect_do => ['SET search_path =public,general; SET default_transaction_read_only TO false;']});
+" nnoremap <leader>rs imy $rs = $dbix_schema->resultset('');<ESC>hhi
  nnoremap <leader>bf i<%filter><CR>unless($m->aborted()){<CR>$_ = Utils::FillInForm->new->fill ( scalarref => \$_, fdat =>   \%ARGS,);<CR>}<CR></%filter><CR>
  nnoremap <leader>bh i<%flags><CR>inherit=>'/syshandler'<CR></%flags><CR>
  nnoremap <leader>ba i<%args><CR></%args><ESC>ko
@@ -119,6 +127,7 @@ nnoremap <leader>cm :s!^!%# !<CR>:nohlsearch<CR>
 nnoremap <leader>cj :s!^!// !<CR>:nohlsearch<CR>
 
 nnoremap <leader>w :w!<CR>
+
 nnoremap <leader>ft vatzf
 nnoremap <leader>fB va{zf
 nnoremap <leader>fb va(zf
@@ -218,6 +227,6 @@ augroup END
 endif
 " 
 " 
-set dictionary+=/opt/practice/.vim/words.txt
+set dictionary+=/home/amitanand/.vim/words.txt
 
 "set verbose=9

@@ -19,7 +19,8 @@
 
 ----------------------------------------------------------------------------------------------------
 --setting global variable with name prompt_val using query and then using that variable in PROMPTs
-select case when  getpgusername()='tradein' then 'local' else 'remote' end as prompt_val \gset
+--select case when  getpgusername()='tradein' then 'local' else 'remote' end as prompt_val \gset
+SELECT case when inet_server_port() = 5433 then 'PSQL' else 'RPSQL' end as prompt_val \gset
 \set PROMPT1 '%:prompt_val:.%/=> '
 \set PROMPT2 '%:prompt_val:.%/-> '
 ----------------------------------------------------------------------------------------------------
@@ -31,5 +32,8 @@ select case when  getpgusername()='tradein' then 'local' else 'remote' end as pr
 --\echo 'Type :current_epoch to see the current epoch value'
 --\echo 'Type :current_date_id to see the current date_id'
 ----------------------------------------------------------------------------------------------------
+
+-- Keep your own local file for psql configuration 
+--\i ~/.psqlrc.local
 
 \unset QUIET

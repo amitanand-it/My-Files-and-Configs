@@ -3,6 +3,7 @@
 #set keymap vi
 
 set editing-mode vi
+set disable-completion off
 
 #opening last result files
 #######################################################
@@ -15,15 +16,16 @@ set editing-mode vi
 
 ",as":"./mason/shell_scripts/apache_skel.sh"
 ",ss":"./stopall && ./startall\n"
-",cs":"cat startall"
+",cs":"startall\n"
 
 # git files
 ",gs":"git status -u \n"
-",gg":"git grep -i ''"
-",ga":"git add ''"
+",gg":"git grep -i ''i"
+",ga":"git add ''i"
 ",gr":"git review"
 ",gd":"git diff "
-",gp":"git pull "
+# ",gp":"git pull "
+",gp":"gp \n"
 ",gf":"gitfs "
 ",gl":"git log "
 ",gc":"git commit "
@@ -37,6 +39,9 @@ set editing-mode vi
 
 ",ll":"PERL5LIB=$PERL5LIB:perl_modules_02:perl_modules_01 "
 ",r":"cd /mnt/raid/shared/git-changes/REPO6678\n"
+",r1":"cd /mnt/raid/shared/git-changes/REPO6678.1\n"
+",r2":"cd /mnt/raid/shared/git-changes/REPO6678.2\n"
+
 
 "\C-l":clear-screen
 "\C-p":history-search-backward
@@ -46,7 +51,7 @@ set editing-mode vi
 ".":yank-last-arg
 
 #will be done later
-#"yank-nth-arg
+#"-":yank-nth-arg 
 
 
 #set keymap vi-command

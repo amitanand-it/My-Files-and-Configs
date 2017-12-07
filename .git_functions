@@ -1,1 +1,257 @@
-# Git functions shoud be created here
+#!/bin/bash
+
+gitcommands()
+{
+  echo "Git Commands:"
+  echo "----------------------------------"
+  echo "Other commands"
+  echo "----------------------------------"
+  echo "1. gp : git pull and set evironment" 
+  echo "2. gerrit-link: showing change for a commit-id or last change" 
+  echo "3. gerrit-task-links: showing all gerrit changes for a particular task" 
+  echo "4. get-unreachable-stash-commits: go to stashed unreachable commits"
+  cat ~/.git_functions | grep '()'
+}
+
+gp(){
+#     git pull gerrit master --verbose
+    git pull
+    setmyenv
+}
+
+setmyenv(){
+
+    # email.pm will be untracked now 
+    /bin/cp ~/.email.pm ./perl_modules_02/B2B/Email.pm
+    echo -e "\n\nIgnoring Email.pm\n"
+    git-ignore ./perl_modules_02/B2B/Email.pm
+
+    ./stopall && ./startall
+}
+
+git-ignored(){
+    git ls-files -v | grep '^[[:lower:]]'
+}
+git-ignore(){
+    local FILE=$1
+    if [[ -z $FILE ]]; then
+         echo
+         echo "Usage: git-ignore <FILE-TO-IGNORE>";
+         echo
+         return
+    fi
+
+    git update-index --assume-unchanged $FILE
+    git ls-files -v | grep '^[[:lower:]]'
+}
+
+git-unignore(){
+    local FILE=$1
+    if [[ -z $FILE ]]; then
+         echo
+         echo "Usage: git-unignore <FILE-TO-UNIGNORE>";
+         echo
+         return
+    fi
+    git update-index --no-assume-unchanged $FILE
+}
+
+gerrit-link() {
+
+   local COMMIT_ID=$1
+   if [[ -z $COMMIT_ID ]]; then
+        COMMIT_ID=$(git log -1 --oneline --author=amit | awk '{print $1}');
+    fi
+
+    local REF=$(git ls-remote | grep $COMMIT_ID | awk '{print $2}')
+    if [[ $REF =~ ^refs/changes/([^/]*?)/([^/]*?)/ ]]; then
+        local GERRIT_CHANGE_NO=${BASH_REMATCH[2]}
+        local LOG_ENTRY=$(git log -1 --oneline $COMMIT_ID)
+        echo 
+        echo "$LOG_ENTRY"
+        echo "https://gerrit.tradeindia.com:8080/$GERRIT_CHANGE_NO"
+        echo 
+    else
+        echo "No change no. found in gerrit"
+    fi
+        
+}
+
+gerrit-task-links(){
+   local TASK_NO=$1
+
+    if [[ -z $TASK_NO ]]; then
+         echo
+         echo "Usage: gerrit-tasks-link <gforge-Task-Number>";
+         echo
+         return
+    fi
+
+   for i in $(git log --grep="task\W*$TASK_NO"  -i --oneline | grep -v Merge | awk '{print $1}'| xargs); 
+   do gerrit-link $i ; 
+   done
+}
+
+get-unreachable-stash-commits(){
+    git fsck --unreachable | grep commit | cut -d\  -f3 | xargs git log --merges --no-walk 
+    # To fix unreachable stashes
+    # git stash store -m 'stash name' commit-id
+}
+
+gitcd() {
+    local IN_REPO=$1
+    if [[ -z $IN_REPO ]]; then
+            cd $CHANGEREPO/$REPO
+    else
+            cd $CHANGEREPO/$IN_REPO
+    fi
+}
+
+gitlog_follow_file() {
+   local FILE=$1
+   git log --pretty=format:"%h - %an, %ar : %s"  --follow $FILE
+}
+
+gitundo-commit(){
+  git reset --soft HEAD~1
+}
+
+gitstash() {
+    local STASH_NAME=$1
+    if [[ -z $STASH_NAME ]]; then
+         echo
+         echo "Usage: gitstash <stash-name>";
+         echo
+     else
+         # -u indicates --include-untracked
+         git stash save -u $STASH_NAME 
+     fi 
+}
+
+gitstash-list() {
+   git stash list 
+}
+
+gitdiff-head() {
+  git diff HEAD
+}
+
+gitdiff() {
+    local COMMIT1=$1
+    local COMMIT2=$2
+    local FILE=$3
+    if [[ -z "$COMMIT1"  || -z "$COMMIT2"  ]];then
+            echo
+            echo "Usage: gitdiff <commit-id1> <commit-id2>";
+            echo
+    else
+            git diff  $COMMIT1 $COMMIT2
+    fi
+}
+
+gitdiff-file() {
+    local COMMIT1=$1
+    local COMMIT2=$2
+    local FILE=$1
+    if [[ -z "$COMMIT1"  || -z "$COMMIT2" || -z "$FILE" ]];then
+            echo
+            echo "Usage: gitdiff_file <commit-id1> <commit-id2> <filename>";
+            echo "To find the commit-ids use command: gitlog_file_changes <filename>";
+            echo "This command will give commit-ids in descending order." 
+            echo "Please give commit-ids to gitdiff_file command in sequence in which changes committed."
+            echo
+    else
+            git diff  $COMMIT1 $COMMIT2  $FILE
+    fi
+}
+
+gitlog-file-changes(){
+    local FILE=$1
+    if [ -z "$FILE" ];then
+            echo "Usage: gitlog_file_changes <filename>";
+    else
+            git log --pretty=oneline $FILE
+    fi
+}
+
+
+
+
+
+#####################################################
+#to search commits by contents 
+#####################################################
+gitlog-findby-content(){
+    local INPUT=$1
+    git log -S${INPUT} --oneline 
+}
+
+
+
+
+#####################################################
+#to search commits using subject
+#####################################################
+gitlog-findby-subject(){
+    local INPUT=$1
+    git log --oneline --grep="$INPUT" -i
+}
+
+
+
+
+
+#####################################################
+#to see last commit files after sending to review
+#####################################################
+gitlcf() {
+  echo ==========   CHANGE FILES =====================
+  local COMMIT_ID=$1
+  if [ -z "$COMMIT_ID" ];then
+      git log -1 --pretty=format:%H | xargs  git diff-tree --pretty=short  --name-status  -r
+  else
+      git diff-tree --pretty=short  --name-status  -r $COMMIT_ID
+  fi
+  echo =============================================
+}
+
+
+
+
+#####################################################
+#to add a remote for sending review on gerrit
+#####################################################
+gitremoteadd()
+{
+    git remote add  gerrit ssh://amitanand@gerrit.tradeindia.com:29418/tradeindia.com
+}
+
+
+
+
+#####################################################
+#to see user REPOs (if only one cd directly to that)
+#####################################################
+gituc() {
+
+    local WHOSE=$1
+    local LINE=$2
+
+    if [ -z $WHOSE ] ; then
+       WHOSE=$USER  
+    fi
+
+    local REPO_COUNT=$(ls -l $CHANGEREPO | grep $WHOSE | awk '{print $NF}' | wc -l); 
+    if [[ $REPO_COUNT -eq 1 ]] ; then
+        local IN_REPO=$(/bin/ls -ltr $CHANGEREPO | grep $WHOSE | awk '{print $NF}')
+        gitcd $IN_REPO 
+    else
+        if [ -z $LINE ] ; then
+            ls -ltr $CHANGEREPO | grep $WHOSE | awk '{print $NF}' | cat -n ;
+        else
+            local IN_REPO=$(/bin/ls -ltr $CHANGEREPO | grep $WHOSE | awk '{print $NF}' | sed "${LINE}q;d")
+            gitcd $IN_REPO 
+        fi
+    fi
+}
+

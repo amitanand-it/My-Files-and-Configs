@@ -1,5 +1,5 @@
 #please see inputrc file as well
-set -o vi
+#set -o vi
 
 # if user is not root, pass all commands via sudo #
 # if [ $UID -ne 0 ]; then
@@ -7,9 +7,8 @@ set -o vi
 #     alias update='sudo apt-get upgrade'
 # fi
 
-REMOTE_PATH=/opt/practice/
-REPO="MyLearnings"
-cd ${REMOTE_PATH}${REPO}
+REPO="REPO6678"
+cd /mnt/raid/shared/git-changes/$REPO
 
 alias sessions='tmux ls'
 alias kill-session='tmux kill-session -t'
@@ -31,7 +30,8 @@ alias ll='ls -lA'
 alias lsd="ls -d1 */"
 alias l.='ls -d .* --color=auto'
 
-alias fn="find -iname "
+# Now a function has been made in bashrc for more utility features 
+#alias fn="find -iname 2>/dev/null"
 
 #alias mount='mount |column -t' 
 alias h='history'
@@ -74,6 +74,7 @@ alias psme='ps -ef | grep $USER --color=always '
 alias rpsql-pwless="psql -h 127.0.0.1 -p 5432 -Utradein_dev tradein_clients -w"
 alias rpsql='/usr/bin/psql -h104.155.213.103 -Utradein_dev tradein_clients'
 
+
 export histcontrol="erasedups:ignoreboth"
 export HISTFILESIZE=500000
 export HISTSIZE=100000
@@ -85,12 +86,17 @@ shopt -s histappend
 shopt -s cmdhist
 export PROMPT_COMMAND="history -a"
 
-PROMPT_DIRTRIM=1
+export DBI_PASS=ti_hacker
+export PROMPT_DIRTRIM=1
 
+# If you are diehard user of vim then you can use below line as pager 
+#export PAGER="/usr/bin/vim -f -R -"
 export PAGER=less
 export TERM=xterm-256color
 
 
+
 export PS1='$(printf "%*s\r%s" $(( COLUMNS-1 )) " $(git branch 2>/dev/null | grep '^*' | sed s/..//)* " "\u@\h:\w$ ")'
+
 [ -r /home/amitanand/.byobu/prompt ] && . /home/amitanand/.byobu/prompt   #byobu-prompt#
 
