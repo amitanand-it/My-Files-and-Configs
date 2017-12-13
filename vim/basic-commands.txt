@@ -1,0 +1,32 @@
+
+
+nG or :n Cursor goes to the specified (n) line (ex. 10G goes to line 10)
+^F (CTRl F) Forward screenful
+^B Backward screenful
+^f One page forward
+^b One page backward
+^U Up half screenful
+^D Down half screenful
+$ Move cursor to the end of current line
+0 (zero) Move cursor to the beginning of current line
+w Forward one word
+b Backward one word
+
+
+save as temp from line 10 to 25
+: 10,25 w temp 
+
+
+db Delete word backward
+d$ Delete to end of line
+D Delete to end of line
+d^ (d caret, not CTRL d) Delete to beginning of line
+d0  Delete to beginning of line
+
+"2p paste from buffer 2 (there are 9)
+J Join next line down to the end of the current line
+
+To create a page break, while in the insert mode, press the CTRL key and l. 
+^L will appear in your text and will cause the printer to start a new page.
+
+:g/pat1/s//pat2/g replace every occurrence of pattern1 (pat1) with pat2
